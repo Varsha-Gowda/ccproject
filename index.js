@@ -13,15 +13,15 @@ app.get("/", function(req, res){
 // use our puclic/chat.js file as listener
 app.use(express.static(__dirname + '/public'));
 // Set port
-var midPort = app.listen(port, function () {
+var server = app.listen(port, function () {
     console.log('Node.js listening on port ' + port);
 })
 
-var io = require('socket.io').listen(midPort);
+var io = require('socket.io')(server); // Pass the server instance to socket.io
 // set up socket connection
-io.sockets.on('connection', function (socket) {
+io.on('connection', function (socket) {
     socket.emit('message', { message: 'Welcome to the Real Time Web Chat' });
     socket.on('send', function (data) {
-        io.sockets.emit('message', data);
+        io.emit('message', data);
     });
 });
